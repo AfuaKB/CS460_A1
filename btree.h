@@ -57,6 +57,9 @@ typedef struct NodeBee{
 /**Instantiating the root node*/
 NodeBee *rootNode = NULL;
 
+NodeBee *insertInParent(NodeBee *rootNodeBee2, NodeBee *leftNodeBee1, NodeBee *rightNodeBee, int key);
+
+
 /**Function that makes a node*/
 /*Instantiating internal node*/
 NodeBee * makeNodeBee(void){
@@ -75,6 +78,28 @@ NodeBee *makeLeafNodeBee(void){
     NodeBee * leafNodeBee = makeNodeBee();
     leafNodeBee->isALeaf = true;
     return leafNodeBee;
+}
+
+/**Creating a struct for the data*/
+typedef struct recordBee{
+    int value;
+}recordBee;
+
+/**Instantiating the record*/
+recordBee *recordBee1 = NULL;
+
+//NodeBee *insertInParent(NodeBee *pBee, NodeBee *pBee1, int sub, NodeBee *pBee2);
+
+/**New Record Creation*/
+recordBee *makeARecord(int value){
+    //recordBee newRecord = NULL;
+    recordBee * recordBee2 = (struct recordBee *)malloc(sizeof(recordBee));
+    if (recordBee2 == NULL) {
+        exit(EXIT_FAILURE);
+    }
+    else
+        recordBee2->value = value;
+    return recordBee2;
 }
 
 /* The following are methods that can be invoked on B+Tree node(s).
@@ -112,6 +137,34 @@ NodeBee findMyNode( int key){
     return *n;
 }
 
+/**Finding and returning record which key refers to*/
+recordBee *finder(NodeBee *rootNode, int key, NodeBee **lLeaf){
+    if (rootNode == NULL) {
+        if (lLeaf != NULL)
+            *lLeaf = NULL;
+
+        return NULL;
+    }
+
+    NodeBee * leaf = NULL;
+        leaf = findMyNode(key);
+        int i = 0;
+        for (i = 0; i < leaf->numOfKeys; ++i)
+            if (leaf->keys[i] == key)
+                break;
+
+    if (lLeaf != NULL)
+        *lLeaf = leaf;
+
+        if (i == leaf ->numOfKeys)
+            return NULL;
+        else
+            return (recordBee *)leaf->pointers[i];
+
+
+
+}
+
 /* INSERT (Chapter 10.5)
 How does inserting an entry into the tree differ from finding an entry in the tree?
 When you insert a key-value pair into the tree, what happens if there is no space in the leaf node? What is the overflow handling algorithm?
@@ -119,31 +172,6 @@ For Splitting B+Tree Nodes (Chapter 10.8.3)
 */
 
 // TODO: here you will need to define INSERT related method(s) of adding key-values in your B+Tree.
-/**Creating a struct for the data*/
-typedef struct recordBee{
-    int value;
-}recordBee;
-
-/**Instantiating the record*/
-recordBee *recordBee1 = NULL;
-
-//NodeBee *insertInParent(NodeBee *pBee, NodeBee *pBee1, int sub, NodeBee *pBee2);
-
-/**New Record Creation*/
-recordBee *makeARecord(int value){
-    //recordBee newRecord = NULL;
-    recordBee * recordBee2 = (struct recordBee *)malloc(sizeof(recordBee));
-    if (recordBee2 == NULL) {
-        exit(EXIT_FAILURE);
-    }
-    else
-        recordBee2->value = value;
-    return recordBee2;
-}
-
-/**Helper function used in finding record Your Key refers to in the Node*/
-//recordBee *finder(NodeBee *rootNode, int key, )
-
 
 /**The helper function used in insertInParent for finding the index of the parent's
  * pointer to the node to the left of the key to be inserted
@@ -378,6 +406,30 @@ NodeBee *newTree(void *recPointer, int key){
     return rootNode;
 }
 
+/**Insert Function*/
+NodeBee *insertM(NodeBee *rootNode, int key, int data){
+    recordBee *recPointer = NULL;
+    NodeBee *leaf = NULL;
+
+   recPointer = finder(rootNode,key,NULL); //!!!!find function
+   if(recPointer!=NULL){ //update data if there is an existing key
+       recPointer->value = data;
+       return rootNode;
+   }
+
+   recPointer = makeARecord(data); //new record for data
+
+   if (rootNode == NULL) //tree does not exist
+       return newTree(key, recPointer);
+
+   leaf = findMyNode(key);
+
+   if(leaf->numOfKeys < order - 1)//leaf can take more pointers and keys
+        leaf = insertInLeaf(leaf, key, recPointer);
+        return rootNode;
+
+    return leafInsertAfterSplit(rootNode, leaf, key, recPointer);
+}
 
 /* BULK LOAD (Chapter 10.8.2)
 Bulk Load is a special operation to build a B+Tree from scratch, from the bottom up, when beginning with an already known dataset.

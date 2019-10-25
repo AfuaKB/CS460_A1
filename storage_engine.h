@@ -19,6 +19,7 @@
  */
 typedef struct storageContext {
     // TODO: you hold a pointer here to find your B+Tree
+    NodeBee * root;
 } STORAGECXT_t;
 
 
