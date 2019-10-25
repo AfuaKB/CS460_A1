@@ -56,6 +56,7 @@ int wrapperGet(STORAGECXT_t **storageEngine, KEY_t targetKey, VAL_t *foundVal){
 
     if (finder((*storageEngine)->root) != NULL)
     {
+        *foundVal = /* store value found */;
         return 1;
     }
 
