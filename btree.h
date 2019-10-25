@@ -204,7 +204,7 @@ NodeBee *insertInLeaf (NodeBee *leafNodeBee1, int key, recordBee *recPointer){
     return leafNodeBee1;
 }
 
-/**Location for splitting node*/
+/** Helper function for Location for splitting node*/
 int location(int len){
     if (len%2 == 0)
         return len/2;

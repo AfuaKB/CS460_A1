@@ -54,6 +54,11 @@ int wrapperGet(STORAGECXT_t **storageEngine, KEY_t targetKey, VAL_t *foundVal){
     (void) targetKey;
     (void) foundVal;
 
+    if (finder((*storageEngine)->root) != NULL)
+    {
+        return 1;
+    }
+
     return 0;
 }
 
@@ -80,7 +85,12 @@ int wrapperPut(STORAGECXT_t **storageEngine, KEY_t key, VAL_t val){
     (void) storageEngine;
     (void) key;
     (void) val;
-    
+
+    if (insertM((*storageEngine)->root) != NULL)
+    {
+        return 1;
+    }
+       
     return 0;
 }
 
