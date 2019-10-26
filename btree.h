@@ -55,7 +55,7 @@ typedef struct NodeBee{
 }NodeBee;
 
 /**Instantiating the root node*/
-NodeBee *rootNode = NULL;
+NodeBee *rootNode;
 
 NodeBee *insertInParent(NodeBee *rootNodeBee2, NodeBee *leftNodeBee1, NodeBee *rightNodeBee, int key);
 
@@ -113,7 +113,12 @@ How many nodes need to be accessed during an equality search for a key, within t
 
 // TODO: here you will need to define FIND/SEARCH related method(s) of finding key-values in your B+Tree.
 /** The Find Algorithm*/
-NodeBee findMyNode( int key){
+//Returning the leaf that contains the passed key
+NodeBee findMyNode( NodeBee *rootNode, int key){
+
+    if (rootNode == NULL)
+        return NULL;
+
     NodeBee * n = rootNode; //this is the root node of the find not the entire tree being assigned to n
                 //iterator that allows you to create a duplicate of the tree to traverse
     int m;
@@ -134,10 +139,13 @@ NodeBee findMyNode( int key){
         }
 
     }
-    return *n;
+    return n;
+    
+        
 }
 
 /**Finding and returning record which key refers to*/
+/**Record holds the value to which the key refers to*/
 recordBee *finder(NodeBee *rootNode, int key, NodeBee **lLeaf){
     if (rootNode == NULL) {
         if (lLeaf != NULL)
@@ -147,16 +155,16 @@ recordBee *finder(NodeBee *rootNode, int key, NodeBee **lLeaf){
     }
 
     NodeBee * leaf = NULL;
-        leaf = findMyNode(key);
-        int i = 0;
-        for (i = 0; i < leaf->numOfKeys; ++i)
-            if (leaf->keys[i] == key)
-                break;
+    leaf = findMyNode(key);
+    int i = 0;
+    for (i = 0; i < leaf->numOfKeys; ++i)
+        if (leaf->keys[i] == key)
+            break;
 
     if (lLeaf != NULL)
         *lLeaf = leaf;
 
-        if (i == leaf ->numOfKeys)
+        if (i == leaf->numOfKeys)
             return NULL;
         else
             return (recordBee *)leaf->pointers[i];
