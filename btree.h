@@ -86,7 +86,7 @@ typedef struct recordBee{
 }recordBee;
 
 /**Instantiating the record*/
-recordBee *recordBee1 = NULL;
+recordBee *recordBee1;
 
 //NodeBee *insertInParent(NodeBee *pBee, NodeBee *pBee1, int sub, NodeBee *pBee2);
 
@@ -112,7 +112,7 @@ How many nodes need to be accessed during an equality search for a key, within t
 */
 
 // TODO: here you will need to define FIND/SEARCH related method(s) of finding key-values in your B+Tree.
-/** The Find Algorithm*/
+/** The Helper Find Algorithm*/
 //Returning the leaf that contains the passed key
 NodeBee findMyNode( NodeBee *rootNode, int key){
 
@@ -159,7 +159,8 @@ recordBee *finder(NodeBee *rootNode, int key, NodeBee **lLeaf){
     int i = 0;
     for (i = 0; i < leaf->numOfKeys; ++i)
         if (leaf->keys[i] == key)
-            break;
+            break;//when it breaks out of the loop what does it return
+            //the record too?
 
     if (lLeaf != NULL)
         *lLeaf = leaf;
